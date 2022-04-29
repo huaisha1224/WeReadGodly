@@ -22,7 +22,7 @@
 
 ## 第三方库
 
-- [Requests](http://docs.python-requests.org/en/master/)
+- [Selenium](https://www.selenium.dev/)
 
 
 ## 待完成的功能
