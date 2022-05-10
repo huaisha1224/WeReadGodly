@@ -11,6 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from time import sleep
 import sqlite3
+import Save_html
 
 
 def get_weread(url):
@@ -34,6 +35,7 @@ def get_weread(url):
     for x in book:
         html_doc = x.get_attribute('innerHTML')
         print("~~~~~~start~~~~~~~")
+        # print(html_doc)
         book_parse(html_doc)
 
 
@@ -41,15 +43,16 @@ def book_parse(html_doc):
     """用re解析网页内容
     """
     try:
-        bookUrl_re = re.compile(r'(/web/reader/[0-9a-zA-Z]*)') # 书籍url地址
+        print('book_parse')
+        bookUrl_re = re.compile(r'(/web/bookDetail/[0-9a-zA-Z]*)') # 书籍url地址
         bookCover_re = re.compile(r'(https://.*.[jpg|png])(" alt)') # 书籍封面
-        bookTitle_re = re.compile(r'(<p class="wr_bookList_item_title">)(.*)(</p><p class="wr_bookList_item_author">)') #书籍名
+        bookTitle_re = re.compile(r'(<p class="wr_bookList_item_title">)(.*)(</p>)') #书籍名
         bookAuthor_re = re.compile(r'(<p class="wr_bookList_item_author">.*">)(.*)(</a></p>)')  # 作者
         bookDesc_re = re.compile(r'(<p class="wr_bookList_item_desc">)(.*)(</p>)')  # 书籍简介
 
         bookUrl = "https://weread.qq.com" + bookUrl_re.search(html_doc).group(0)
         bookCover = bookCover_re.search(html_doc).group(1)
-        bookTitle = bookTitle_re.search(html_doc).group(2)
+        bookTitle = bookTitle_re.search(html_doc).group(1)
         bookAuthor = bookAuthor_re.search(html_doc).group(2)
         bookDesc = bookDesc_re.search(html_doc).group(2)
 
@@ -62,6 +65,7 @@ def book_parse(html_doc):
         save_db(bookTitle,bookAuthor,bookUrl, bookCover,bookDesc)
     except:
         pass
+        print('报错啦')
 
 def save_db(bookTitle,bookAuthor,bookUrl, bookCover,bookDesc):
     """保存数据到sqlite
@@ -80,7 +84,7 @@ def save_db(bookTitle,bookAuthor,bookUrl, bookCover,bookDesc):
         conn.close()
     else:
          # 创建数据库 处理数据并写入
-        conn = sqlite3.connect('weread.db')
+        conn = sqlite3.connect(filename)
         c = conn.cursor()
         c.execute("CREATE TABLE WEREAD \
             (bookTitle TEXT NOT NULL UNIQUE,\
@@ -97,3 +101,4 @@ def save_db(bookTitle,bookAuthor,bookUrl, bookCover,bookDesc):
 if __name__== "__main__":
     url = 'https://weread.qq.com/web/appcategory/newrating_publish'
     get_weread(url)
+    Save_html.save_html()
