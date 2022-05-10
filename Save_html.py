@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-from dataclasses import dataclass
 import sqlite3
 from jinja2 import Environment, FileSystemLoader
 
@@ -25,7 +24,9 @@ def sql_data():
     for x in cur.fetchall():
         book_data.append(x)
     con.close()
-    return book_data
+    # book_data = sorted(book_data, key=lambda x:x['bookTitle'], reverse=True) # 对列表倒序排序
+    # print(book_data)
+    return book_data[::-1] # 切片倒序输出
 
 
 def save_html():
