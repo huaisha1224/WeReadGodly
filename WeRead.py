@@ -24,13 +24,7 @@ def get_weread(url):
     for i in range(10):
         driver.execute_script("window.scrollBy(0,10000)")   #向下滚动
         sleep(1)
-
-    # book = driver.find_element_by_xpath('//*[@id="routerView"]/div[2]/div[2]/ul/li/ul').text # 所有
-    # book = driver.find_element_by_xpath('//*[@id="routerView"]/div[2]/div[2]/ul/li')  # 单本
-    # html_doc = book.get_attribute('innerHTML')
-    # print(book.get_attribute('innerHTML'))
-    # bookParse(html_doc)
-
+        
     book = driver.find_elements_by_xpath('//*[@id="routerView"]/div[2]/div[2]/ul/li')  # 获取单本书籍数据
     for x in book:
         html_doc = x.get_attribute('innerHTML')
@@ -43,16 +37,16 @@ def book_parse(html_doc):
     """用re解析网页内容
     """
     try:
-        print('book_parse')
+        # print('book_parse')
         bookUrl_re = re.compile(r'(/web/bookDetail/[0-9a-zA-Z]*)') # 书籍url地址
         bookCover_re = re.compile(r'(https://.*.[jpg|png])(" alt)') # 书籍封面
-        bookTitle_re = re.compile(r'(<p class="wr_bookList_item_title">)(.*)(</p>)') #书籍名
+        bookTitle_re = re.compile(r'(<p class="wr_bookList_item_title">)(.*)(</p><p class="wr_bookList_item_author">)') # 书籍名 <p class="wr_bookList_item_title">中国历代政治得失</p>
         bookAuthor_re = re.compile(r'(<p class="wr_bookList_item_author">.*">)(.*)(</a></p>)')  # 作者
         bookDesc_re = re.compile(r'(<p class="wr_bookList_item_desc">)(.*)(</p>)')  # 书籍简介
 
         bookUrl = "https://weread.qq.com" + bookUrl_re.search(html_doc).group(0)
         bookCover = bookCover_re.search(html_doc).group(1)
-        bookTitle = bookTitle_re.search(html_doc).group(1)
+        bookTitle = bookTitle_re.search(html_doc).group(2)
         bookAuthor = bookAuthor_re.search(html_doc).group(2)
         bookDesc = bookDesc_re.search(html_doc).group(2)
 
