@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
+__author__ = "Huaisha2049"
 from ast import Try
 import re
 import os
@@ -25,7 +26,8 @@ def get_weread(url):
         driver.execute_script("window.scrollBy(0,10000)")   #向下滚动
         sleep(1)
         
-    book = driver.find_elements_by_xpath('//*[@id="routerView"]/div[2]/div[2]/ul/li')  # 获取单本书籍数据
+    # book = driver.find_elements_by_xpath('//*[@id="routerView"]/div[2]/div[2]/ul/li')  # 获取单本书籍数据. selenium 3.x的写法
+    book = driver.find_elements('xpath', '//*[@id="routerView"]/div[2]/div[2]/ul/li')  # 获取单本书籍数据, selenium 4语法
     for x in book:
         html_doc = x.get_attribute('innerHTML')
         print("~~~~~~start~~~~~~~")
@@ -38,7 +40,8 @@ def book_parse(html_doc):
     """
     try:
         # print('book_parse')
-        bookUrl_re = re.compile(r'(/web/bookDetail/[0-9a-zA-Z]*)') # 书籍url地址
+        # bookUrl_re = re.compile(r'(/web/bookDetail/[0-9a-zA-Z]*)') # 书籍url地址
+        bookUrl_re = re.compile(r'(/web/reader/[0-9a-zA-Z]*)') # 书籍url地址
         bookCover_re = re.compile(r'(https://.*.[jpg|png])(" alt)') # 书籍封面
         bookTitle_re = re.compile(r'(<p class="wr_bookList_item_title">)(.*)(</p><p class="wr_bookList_item_author">)') # 书籍名 <p class="wr_bookList_item_title">中国历代政治得失</p>
         bookAuthor_re = re.compile(r'(<p class="wr_bookList_item_author">.*">)(.*)(</a></p>)')  # 作者
