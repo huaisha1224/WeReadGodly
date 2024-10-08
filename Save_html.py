@@ -34,7 +34,7 @@ def save_html():
     data = sql_data()
     env = Environment(loader=FileSystemLoader('./'))
     template = env.get_template('weread/template.html') # 导入模版
-    with open('weread/godly.html', 'w+', encoding='utf-8') as f:
+    with open('weread/index.html', 'w+', encoding='utf-8') as f:
         out = template.render(data=data)
         f.write(out)
         f.close()
